@@ -46,7 +46,7 @@ public sealed class DDNSWorker(IServiceProvider serviceProvider) : Worker<TimeJo
             //更新IP
             var provider = ServiceProvider.GetRequiredKeyedService<IDDNSProvider>(config.Provider);
             var val = await provider.UpdateDomains(state);
-            Logger.LogInformation($"UpdateDomains by{provider} result is {val} .");
+            Logger.LogInformation($"UpdateDomains by {provider} result is {val} .");
             await ExecuteCallbackAsync(val);
         }
     }

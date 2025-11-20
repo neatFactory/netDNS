@@ -25,23 +25,26 @@ RUN mkdir -p /app/states /app/logs && \
     chown -R 65532:65532 /app/states /app/logs
 
 # ==============================================================================
-# Stage A: jobagent
+# Stage A: jobagent latest
 # ==============================================================================
-FROM aicrosoft/jobagent:1.0.0-beta.2 as jobagent
+FROM aicrosoft/jobagent:latest as latest
 WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["./JobAgent"]
 
-# 整目录复制，但 .dockerignore 里排除掉的不会进来
+# ==============================================================================
+# Stage B: jobagent secure
+# ==============================================================================
+FROM aicrosoft/jobagent:secure as secure
+WORKDIR /app
 COPY --from=build --chown=65532:65532 /app .
-
 USER 65532
 ENTRYPOINT ["./JobAgent"]
 
-
 # ==============================================================================
-# Stage B: debug
+# Stage C: jobagent  debug
 # ==============================================================================
-FROM aicrosoft/jobagent:1.0.0-beta.2-debug as debug
+FROM aicrosoft/jobagent:debug as debug
 WORKDIR /app
-# 整目录复制，但 .dockerignore 里排除掉的不会进来
 COPY --from=build /app .
 ENTRYPOINT ["./JobAgent"]
