@@ -93,6 +93,7 @@ public sealed class UdpReceiver : ServiceBase, IAsyncDisposable
         //    ipv6Reg = new Regex(setting.RouteEventSetting.IpV6RegPartten, RegexOptions.Compiled);
 
         udp = new UdpClient(setting.RouteEventSetting.UpdServicePort);
+        Logger.LogInformation($"DDNS RouterEventer start listening on port {setting.RouteEventSetting.UpdServicePort} of the local UDP service.");
 
         // 立即启动后台接收循环
         receiveTask = Task.Run(() => ReceiveLoop(token), token);

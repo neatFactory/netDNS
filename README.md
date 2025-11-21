@@ -12,8 +12,12 @@
 
 A plugin for JobAgent that implements DDNS functionality.
 
+Cloudflare's functionality is now fully operational.
 > Currently, only the Cloudflare provider has been implemented.
 
+## There are 2 ways
+- Query the local IP every 5 minutes. If it is different, update it.
+- The router sends a new public IP update event. If it is different, update it.
 
 
 # How To Use
@@ -28,11 +32,22 @@ Available Docker registries:
 - <https://github.com/neatFactory/netDNS/pkgs/container/netdns>
 > Visit <https://hub.docker.com/r/aicrosoft/netdns> to get the latest Docker image.
 
+### Available Docker Versions
+| Version | Type            | Description                                         |
+| :------ | :-------------- | :-------------------------------------------------- |
+| 1.2.3.4 | Standard        | Root privileges + No shell series                   |
+| latest  | Latest Standard | Root privileges + No shell, latest                  |
+| secure  | Secure          | Minimum privileges + No shell, latest               |
+| debug   | Debug           | Root privileges + Shell + JobSamples plugin, latest |
+
 
 ### DEBUG Creation
 ```shell
-sudo docker run -d \
-  --name ddns-de \
+sudo docker run -d --name ddns-de \
+  -p 600:600/udp \
+  -v /apps/ddns/logs:/app/logs:rw \
+  -v /apps/ddns/states:/app/states:rw \
+  -v /apps/ddns/plugins/netDNS/netDNS.json:/app/Plugins/netDNS/netDNS.json:ro \
   aicrosoft/netdns:debug
 ```
 
@@ -51,16 +66,17 @@ touch /apps/ddns/plugins/netDNS/netDNS.json
 
 ## Create a container
 sudo docker run -d --name ddns \
-  -p 600:600 \
+  -p 600:600/udp \
   -v /apps/ddns/logs:/app/logs:rw \
   -v /apps/ddns/states:/app/states:rw \
+  -v /apps/ddns/plugins/JobSampples:/app/Plugins/JobSampples:ro \
   -v /apps/ddns/plugins/netDNS/netDNS.json:/app/Plugins/netDNS/netDNS.json:ro \
   aicrosoft/netdns:latest
 
 ## Create a container mapping ipv4 and ipv6
 sudo docker run -d --name ddns \
-  -p 0.0.0.0:600:600 \
-  -p [::]:600:600 \
+  -p 0.0.0.0:600:600/udp \
+  -p [::]:600:600/udp \
   -v /apps/ddns/logs:/app/logs:rw \
   -v /apps/ddns/states:/app/states:rw \
   -v /apps/ddns/plugins/netDNS/netDNS.json:/app/Plugins/netDNS/netDNS.json:ro \
@@ -69,13 +85,14 @@ sudo docker run -d --name ddns \
 ```
 
 ### Docker Parameter Description
+- The mapping of port 600 is the event notification sent by your router. It can be modified in the configuration.
 - If you do not need to view logs, do not map `/app/logs`. Logs will only be retained for 30 days.
 - If you do not need to view or modify the status of Jobs, do not map `/app/states`.
 - If you map `/app/Plugins`, you must place the plugin content in the corresponding path on the host machine.
 - You can map `/app/appsettings.json` to the corresponding configuration on the host machine.
 - You must map `/app/Plugins/netDNS/netDNS.json` to the corresponding configuration on the host machine.
 
-### etDNS.json Configuration Example
+### netDNS.json Configuration Example
 ```json
 {
   "DDNS": {
@@ -116,6 +133,6 @@ sudo docker run -d --name ddns \
 
 
 # Contributing
-
 Contributions are welcome! Feel free to submit a Pull Request.
+
 
