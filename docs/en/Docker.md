@@ -1,6 +1,11 @@
 # netDNS
 
-![LOGO](https://raw.githubusercontent.com/neatFactory/netDNS/refs/heads/main/docs/assets/logo/64.png)
+```text
+            __  ___  _  ______
+  ___  ___ / /_/ _ \/ |/ / __/
+ / _ \/ -_) __/ // /    /\ \  
+/_//_/\__/\__/____/_/|_/___/                                
+```
 
 [![Apache licensed][9]][10]
 [![Docker][3]][4] 
@@ -9,6 +14,8 @@
 [4]: https://hub.docker.com/r/aicrosoft/netdns
 [9]: https://img.shields.io/badge/license-Apache-blue.svg
 [10]: LICENSE
+
+
 
 A plugin for JobAgent that implements DDNS functionality.
 
@@ -134,5 +141,8 @@ sudo docker run -d --name ddns \
 
 # Contributing
 Contributions are welcome! Feel free to submit a Pull Request.
+
+
+<!-- # Special Thanks -->
 
 
