@@ -69,19 +69,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-        # ========== A) 构建 jobagent 瘦镜像 ==========
-      - name: Build & push jobagent
+        # ========== C) 构建 debug 镜像 ==========
+      - name: Build & push debug
         uses: docker/build-push-action@v4
         with:
           context: .
           file: build/scripts/Dockerfile
-          target: latest
+          target: debug
           push: true
           tags: |
-            ${{ env.DOCKERHUB_REPO }}:latest
-            ${{ env.DOCKERHUB_REPO }}:${{ steps.set_version.outputs.version }}
-            ${{ env.GHCR_REPO_LC }}:latest
-            ${{ env.GHCR_REPO_LC }}:${{ steps.set_version.outputs.version }}
+            ${{ env.DOCKERHUB_REPO }}:debug
+            ${{ env.GHCR_REPO_LC }}:debug
 
       # ========== B) 构建 secure 镜像 ==========
       - name: Build & push debug
@@ -95,14 +93,18 @@ jobs:
             ${{ env.DOCKERHUB_REPO }}:secure
             ${{ env.GHCR_REPO_LC }}:secure
 
-      # ========== C) 构建 debug 镜像 ==========
-      - name: Build & push debug
+      # ========== A) 构建 jobagent 瘦镜像 ==========
+      - name: Build & push jobagent
         uses: docker/build-push-action@v4
         with:
           context: .
           file: build/scripts/Dockerfile
-          target: debug
+          target: latest
           push: true
           tags: |
-            ${{ env.DOCKERHUB_REPO }}:debug
-            ${{ env.GHCR_REPO_LC }}:debug
+            ${{ env.DOCKERHUB_REPO }}:latest
+            ${{ env.DOCKERHUB_REPO }}:${{ steps.set_version.outputs.version }}
+            ${{ env.GHCR_REPO_LC }}:latest
+            ${{ env.GHCR_REPO_LC }}:${{ steps.set_version.outputs.version }}
+
+            
